@@ -1,0 +1,222 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+tags:
+  - name: ' LoginController'
+    description: Servicios de Login
+  - name: ' LoginController'
+    description: Servicios de gestion de parametros
+paths:
+  /api/v1/parameter/expresion:
+    get:
+      tags:
+        - ' LoginController'
+      summary: servicio que consulta un parametro existente
+      operationId: consultParameterController
+      parameters:
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: consulta exitosa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParameterModel'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: error de negocio
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    put:
+      tags:
+        - ' LoginController'
+      summary: servicio que actualizar un parametro existente
+      operationId: updateParameterController
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParameterModel'
+        required: true
+      responses:
+        '200':
+          description: actualizacion exitosa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParameterModel'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: error de negocio
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /api/v1/user/register:
+    post:
+      tags:
+        - user-controller
+      summary: servicio que registra un usuario
+      operationId: registerUserController
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserModel'
+        required: true
+      responses:
+        '200':
+          description: registro exitoso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserModel'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: error de negocio
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /api/login:
+    post:
+      tags:
+        - ' LoginController'
+      summary: servicio que permite hacer login por medio de id y password previamente registrado
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginModel'
+        required: true
+      responses:
+        '200':
+          description: login exitoso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginModel'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+components:
+  schemas:
+    ParameterModel:
+      required:
+        - name
+        - value
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+    ApiError:
+      type: object
+      properties:
+        message:
+          type: string
+    PhoneModel:
+      required:
+        - citycode
+        - countryCode
+        - number
+      type: object
+      properties:
+        number:
+          maxLength: 10
+          minLength: 2
+          type: string
+        citycode:
+          maxLength: 10
+          minLength: 2
+          type: string
+        countryCode:
+          maxLength: 10
+          minLength: 2
+          type: string
+    UserModel:
+      required:
+        - email
+        - name
+        - password
+        - phones
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          maxLength: 30
+          minLength: 5
+          type: string
+        email:
+          maxLength: 30
+          minLength: 5
+          pattern: ^[a-zA-Z0-9._%+-]+@dominio\.cl$
+          type: string
+        password:
+          maxLength: 30
+          minLength: 5
+          type: string
+        modified:
+          type: string
+          format: date-time
+        created:
+          type: string
+          format: date-time
+        lastlogin:
+          type: string
+          format: date-time
+        isactive:
+          type: boolean
+        phones:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhoneModel'
+        token:
+          type: string
+    LoginModel:
+      required:
+        - id
+        - password
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        password:
+          maxLength: 30
+          minLength: 5
+          type: string
+        token:
+          type: string
